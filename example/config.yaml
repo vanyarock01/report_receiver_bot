@@ -1,0 +1,19 @@
+student:
+- first_name: Иван
+  last_name: Иванов
+  second_name: Иванович
+  group_name: M3-403С
+  user_name: any_telegram_username
+admin:
+- group: M3-403С
+  user: jesmarts
+work:
+- telegram api
+report_type:
+- format: .pdf
+  max_size_mb: 10
+  notify: true
+- format: .docx
+  max_size_mb: 15
+work_dir: .
+bot_token: XXXXXXXX:YYYYYYYYYYYYYYYYYYYYYYYYYYYYY
