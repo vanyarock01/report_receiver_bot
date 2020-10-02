@@ -14,7 +14,7 @@ func ReadFileBytes(fromPath string) ([]byte, error) {
         return nil, err
     }
     defer file.Close()
-	return ioutil.ReadAll(file)
+    return ioutil.ReadAll(file)
 }
 
 
