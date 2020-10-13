@@ -1,13 +1,13 @@
 package report_receiver_bot
 
 import (
+	"github.com/mdigger/translit"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"log"
 	"os"
-    "log"
-    "strings"
-    "io/ioutil"
-    "path/filepath"
-    "gopkg.in/yaml.v2"
-    "github.com/mdigger/translit"
+	"path/filepath"
+	"strings"
 )
 
 type Student struct {
@@ -16,7 +16,7 @@ type Student struct {
 	SecondName string `yaml:"second_name"`
 	GroupName  string `yaml:"group_name"`
 	UserName   string `yaml:"user_name"`
-	WorkDir	string
+	WorkDir    string
 }
 
 type Admin struct {
@@ -26,18 +26,18 @@ type Admin struct {
 }
 
 type ReportType struct {
-	Format	string `yaml:"format"`
-	MaxSizeMb int	`yaml:"max_size_mb"`
-	Notify	bool   `yaml:"notify"`
+	Format    string `yaml:"format"`
+	MaxSizeMb int    `yaml:"max_size_mb"`
+	Notify    bool   `yaml:"notify"`
 }
 
 type Config struct {
-	Student  []Student	`yaml:"student"`
-	Admin	[]Admin	  `yaml:"admin"`
-	Work	 []string	 `yaml:"work"`
+	Student  []Student    `yaml:"student"`
+	Admin    []Admin      `yaml:"admin"`
+	Work     []string     `yaml:"work"`
 	Report   []ReportType `yaml:"report_type"`
-	WorkDir  string	   `yaml:"work_dir"`
-	BotToken string	   `yaml:"bot_token"`
+	WorkDir  string       `yaml:"work_dir"`
+	BotToken string       `yaml:"bot_token"`
 }
 
 func ReadConfig(filePath string) (*Config, error) {
@@ -58,7 +58,6 @@ func ReadConfig(filePath string) (*Config, error) {
 	return &conf, nil
 }
 
-
 func (conf *Config) Save(filePath string) error {
 	dump, err := yaml.Marshal(conf)
 	if err != nil {
@@ -76,7 +75,7 @@ func (conf *Config) PrepareStudentWorkDir() error {
 		studDir := filepath.Join(
 			conf.WorkDir,
 			s.GroupName,
-			strings.ToLower(translit.Ru(string([]rune(s.FirstName)[0]) + s.LastName)))
+			strings.ToLower(translit.Ru(string([]rune(s.FirstName)[0])+s.LastName)))
 
 		if _, err := os.Stat(studDir); os.IsNotExist(err) {
 			log.Printf("[info] Create student directory: %s", studDir)
@@ -98,7 +97,7 @@ func (conf *Config) PrepareStudentWorkDir() error {
 		}
 	}
 	return nil
-} 
+}
 
 func (conf *Config) GetAdmin(userName string) *Admin {
 	userName = strings.ToLower(userName)

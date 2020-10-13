@@ -1,14 +1,14 @@
 package report_receiver_bot
 
 import (
-    "fmt"
-    "log"
-    "time"
     "errors"
-    "strings"
-    "io/ioutil"
-    "path/filepath"
+    "fmt"
     "github.com/go-telegram-bot-api/telegram-bot-api"
+    "io/ioutil"
+    "log"
+    "path/filepath"
+    "strings"
+    "time"
 )
 
 var (
@@ -26,7 +26,7 @@ func (rc *ReportReceiver) NotifyGroupAdmin(stud *Student, work string, fileID st
     log.Printf("[info] Notify report from %s to Group admin", stud.UserName)
     admin := rc.Config.GetAdminByGroup(stud.GroupName)
     if admin == nil {
-        log.Printf("[info] Group %s admin not found", )
+        log.Printf("[info] Group %s admin not found")
         return
     }
     if admin.ChatID == 0 {
@@ -39,7 +39,7 @@ func (rc *ReportReceiver) NotifyGroupAdmin(stud *Student, work string, fileID st
 }
 
 func (rc *ReportReceiver) UnauthorizedHandler(update *tgbotapi.Update) {
-    // send a funny picture with cat to a passerby 
+    // send a funny picture with cat to a passerby
     msg := tgbotapi.NewPhotoUpload(update.Message.Chat.ID, "forbidden")
     msg.FileID = "https://http.cat/403"
     msg.UseExisting = true
@@ -69,7 +69,6 @@ If you sent only one file (for example %spdf%s) you will receive a notification 
     rc.Bot.Send(msg)
 }
 
-
 func (rc *ReportReceiver) StatCommandHandler(stud *Student, update *tgbotapi.Update) {
     log.Printf("[info] Collect statistic for %s", stud.UserName)
 
@@ -79,10 +78,10 @@ func (rc *ReportReceiver) StatCommandHandler(stud *Student, update *tgbotapi.Upd
     }()
 
     text := fmt.Sprintf("*Student*: _%s %s %s_\n*Group*: _%s_\n",
-                        stud.LastName,
-                        stud.FirstName,
-                        stud.SecondName,
-                        stud.GroupName)
+        stud.LastName,
+        stud.FirstName,
+        stud.SecondName,
+        stud.GroupName)
 
     for _, workName := range rc.Config.Work {
         workPath := filepath.Join(rc.Config.WorkDir, stud.WorkDir, workName)
@@ -106,7 +105,7 @@ func (rc *ReportReceiver) StatCommandHandler(stud *Student, update *tgbotapi.Upd
             }
         }
         for _, report := range rc.Config.Report {
-            text += fmt.Sprintf("| _%s:_ *%s* ", strings.ToUpper(report.Format), reportMap[report.Format]) 
+            text += fmt.Sprintf("| _%s:_ *%s* ", strings.ToUpper(report.Format), reportMap[report.Format])
         }
         text += fmt.Sprintf("| *%s*\n", workName)
 
@@ -137,7 +136,7 @@ func (rc *ReportReceiver) ReceiveDocumentHandler(stud *Student, update *tgbotapi
     report, err := func() (*ReportType, error) { // file validator
         for i, report := range rc.Config.Report {
             if docExt == report.Format {
-                if update.Message.Document.FileSize > report.MaxSizeMb * 1024 * 1024 {
+                if update.Message.Document.FileSize > report.MaxSizeMb*1024*1024 {
                     msg.Text = fmt.Sprintf("%s file size must be less than %dMb.", report.Format, report.MaxSizeMb)
                     return nil, errors.New("Large file")
                 } else {
@@ -199,7 +198,7 @@ func (rc *ReportReceiver) ReceiveDocumentHandler(stud *Student, update *tgbotapi
 
 func (rc *ReportReceiver) NotifyForgottenReportHandler(stud *Student, work string, chatID int64) {
     log.Printf("[info] Run notify scheduler for student: %s and work: %s", stud.UserName, work)
-    Schedule(30 * time.Second, 5, func() (bool, error) {
+    Schedule(30*time.Second, 5, func() (bool, error) {
         workPath := filepath.Join(rc.Config.WorkDir, stud.WorkDir, work)
         reports, err := ioutil.ReadDir(workPath)
         if err != nil {
@@ -232,7 +231,7 @@ func (rc *ReportReceiver) NotifyForgottenReportHandler(stud *Student, work strin
         }
         text := fmt.Sprintf("Please, send missing report: *[%s]* ", work)
         for _, report := range rc.Config.Report {
-            text += fmt.Sprintf(" _%s:_ *%s* |", strings.ToUpper(report.Format), reportMap[report.Format]) 
+            text += fmt.Sprintf(" _%s:_ *%s* |", strings.ToUpper(report.Format), reportMap[report.Format])
         }
         text += "\n"
 
@@ -261,8 +260,8 @@ func NewReportReceiver(config *Config, path string) (*ReportReceiver, error) {
     // bot.Debug = true
 
     return &ReportReceiver{
-        Bot: bot,
-        Config: config,
+        Bot:        bot,
+        Config:     config,
         configPath: path,
     }, nil
 }
@@ -306,7 +305,7 @@ func Loop(confPath string) {
 
         stud := rc.Config.GetStudent(userName)
         if stud == nil {
-            log.Printf("[warning] %s", err) 
+            log.Printf("[warning] %s", err)
             go rc.UnauthorizedHandler(&update)
             continue
         }

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/vanyarock01/report_receiver_bot" 
+	"github.com/vanyarock01/report_receiver_bot"
 )
 
 func main() {
